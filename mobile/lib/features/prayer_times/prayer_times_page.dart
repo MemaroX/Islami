@@ -14,53 +14,86 @@ class PrayerTimesPage extends StatefulWidget {
 
 class _PrayerTimesPageState extends State<PrayerTimesPage> {
   final _prayerService = PrayerTimesService();
-  late Future<PrayerTimes?> _prayerTimesFuture;
+  PrayerTimes? _currentDayTimes;
+  PrayerTimes? _tomorrowTimes;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _prayerTimesFuture = _prayerService.getPrayerTimes();
+    _loadAllTimes();
+  }
+
+  Future<void> _loadAllTimes() async {
+    final now = DateTime.now();
+    final today = await _prayerService.getPrayerTimes(date: now);
+    final tomorrow = await _prayerService.getPrayerTimes(date: now.add(const Duration(days: 1)));
+    
+    if (mounted) {
+      setState(() {
+        _currentDayTimes = today;
+        _tomorrowTimes = tomorrow;
+        _isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_currentDayTimes == null) {
+      return const Center(child: Text('Could not load prayer times. Check location.'));
+    }
+
+    final prayerTimes = _currentDayTimes!;
+    final now = DateTime.now();
+    
+    // Manual detection of the next prayer for maximum reliability
+    String nextPrayerName = 'FAJR (TOMORROW)';
+    DateTime? nextTime = _tomorrowTimes?.fajr;
+
+    if (now.isBefore(prayerTimes.fajr)) {
+      nextPrayerName = 'FAJR';
+      nextTime = prayerTimes.fajr;
+    } else if (now.isBefore(prayerTimes.sunrise)) {
+      nextPrayerName = 'SUNRISE';
+      nextTime = prayerTimes.sunrise;
+    } else if (now.isBefore(prayerTimes.dhuhr)) {
+      nextPrayerName = 'DHUHR';
+      nextTime = prayerTimes.dhuhr;
+    } else if (now.isBefore(prayerTimes.asr)) {
+      nextPrayerName = 'ASR';
+      nextTime = prayerTimes.asr;
+    } else if (now.isBefore(prayerTimes.maghrib)) {
+      nextPrayerName = 'MAGHRIB';
+      nextTime = prayerTimes.maghrib;
+    } else if (now.isBefore(prayerTimes.isha)) {
+      nextPrayerName = 'ISHA';
+      nextTime = prayerTimes.isha;
+    }
+
     return Container(
       padding: const EdgeInsets.all(16.0),
-      child: FutureBuilder<PrayerTimes?>(
-        future: _prayerTimesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError || snapshot.data == null) {
-            return Center(child: Text('Error: ${snapshot.error ?? "Could not get prayer times"}'));
-          }
-
-          final prayerTimes = snapshot.data!;
-          final now = DateTime.now();
-          final nextPrayer = prayerTimes.nextPrayer();
-          final nextPrayerTime = prayerTimes.timeForPrayer(nextPrayer);
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildHeader(nextPrayer, nextPrayerTime),
-              const SizedBox(height: 24),
-              _buildPrayerRow('Fajr', prayerTimes.fajr, FontAwesomeIcons.sun),
-              _buildPrayerRow('Sunrise', prayerTimes.sunrise, FontAwesomeIcons.solidSun),
-              _buildPrayerRow('Dhuhr', prayerTimes.dhuhr, FontAwesomeIcons.cloudSun),
-              _buildPrayerRow('Asr', prayerTimes.asr, FontAwesomeIcons.cloudSun),
-              _buildPrayerRow('Maghrib', prayerTimes.maghrib, FontAwesomeIcons.cloudMoon),
-              _buildPrayerRow('Isha', prayerTimes.isha, FontAwesomeIcons.moon),
-            ],
-          );
-        },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildHeader(nextPrayerName, nextTime),
+          const SizedBox(height: 24),
+          _buildPrayerRow('Fajr', prayerTimes.fajr, FontAwesomeIcons.sun),
+          _buildPrayerRow('Sunrise', prayerTimes.sunrise, FontAwesomeIcons.solidSun),
+          _buildPrayerRow('Dhuhr', prayerTimes.dhuhr, FontAwesomeIcons.cloudSun),
+          _buildPrayerRow('Asr', prayerTimes.asr, FontAwesomeIcons.cloudSun),
+          _buildPrayerRow('Maghrib', prayerTimes.maghrib, FontAwesomeIcons.cloudMoon),
+          _buildPrayerRow('Isha', prayerTimes.isha, FontAwesomeIcons.moon),
+        ],
       ),
     );
   }
 
-  Widget _buildHeader(Prayer nextPrayer, DateTime? nextTime) {
-    String prayerName = nextPrayer.name.toUpperCase();
+  Widget _buildHeader(String prayerName, DateTime? nextTime) {
     String timeStr = nextTime != null ? DateFormat.jm().format(nextTime.toLocal()) : '--:--';
 
     return Container(

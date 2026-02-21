@@ -5,9 +5,29 @@ import 'package:islami_mobile/core/theme.dart';
 import 'package:islami_mobile/features/home/prayer_tracker_page.dart';
 import 'package:islami_mobile/features/home/ummah_page.dart';
 import 'package:islami_mobile/features/tasbih/tasbih_page.dart';
+import 'package:islami_mobile/features/prayer_times/prayer_times_service.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final _prayerService = PrayerTimesService();
+  String _locationName = 'Loading location...';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLocation();
+  }
+
+  Future<void> _loadLocation() async {
+    final location = await _prayerService.getCityName();
+    if (mounted) setState(() => _locationName = location);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +54,8 @@ class HomePage extends StatelessWidget {
             children: [
               _buildFeatureCard(context, 'Tracker', FontAwesomeIcons.clipboardCheck, const PrayerTrackerPage()),
               _buildFeatureCard(context, 'Tasbih', FontAwesomeIcons.handsPraying, const TasbihPage()),
-              _buildFeatureCard(context, 'Hajj Guide', FontAwesomeIcons.kaaba, const Center(child: Text('Hajj Guide coming soon'))),
-              _buildFeatureCard(context, 'Calendar', FontAwesomeIcons.calendarCheck, const Center(child: Text('Hijri Calendar coming soon'))),
               _buildFeatureCard(context, 'Ummah', FontAwesomeIcons.users, const UmmahPage()),
+              _buildFeatureCard(context, 'Quran', FontAwesomeIcons.bookQuran, const Center(child: Text('Quran Kareem'))),
             ],
           ),
         ],
@@ -74,11 +93,11 @@ class HomePage extends StatelessWidget {
             style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 12),
-          const Row(
+          Row(
             children: [
-              Icon(Icons.location_on, color: Colors.white70, size: 16),
-              SizedBox(width: 4),
-              Text('Mecca, Saudi Arabia', style: TextStyle(color: Colors.white70)),
+              const Icon(Icons.location_on, color: Colors.white70, size: 16),
+              const SizedBox(width: 4),
+              Text(_locationName, style: const TextStyle(color: Colors.white70)),
             ],
           ),
         ],

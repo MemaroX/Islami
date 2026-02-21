@@ -25,14 +25,16 @@ class _SurahDetailPageState extends State<SurahDetailPage> {
   }
 
   Future<void> _playVerse(int verseNumber) async {
-    if (_playingVerse == verseNumber) {
-      await _audioPlayer.stop();
-      setState(() => _playingVerse = null);
-      return;
-    }
-
-    final url = _quranService.getAudioUrl(widget.surahNumber, verseNumber);
     try {
+      if (_playingVerse == verseNumber) {
+        await _audioPlayer.stop();
+        setState(() => _playingVerse = null);
+        return;
+      }
+
+      // Using the highly reliable Global Quran Audio CDN
+      final url = "https://cdn.islamic.network/quran/audio/128/ar.alafasy/${widget.surahNumber}${verseNumber.toString().padLeft(3, '0')}.mp3";
+      
       await _audioPlayer.play(UrlSource(url));
       setState(() => _playingVerse = verseNumber);
       
@@ -40,8 +42,9 @@ class _SurahDetailPageState extends State<SurahDetailPage> {
         if (mounted) setState(() => _playingVerse = null);
       });
     } catch (e) {
+      print('Audio Player Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error playing audio: $e')),
+        SnackBar(content: Text('Error playing audio. Check internet connection.')),
       );
     }
   }
@@ -84,18 +87,14 @@ class _SurahDetailPageState extends State<SurahDetailPage> {
                   _quranService.getVerse(widget.surahNumber, verseNumber),
                   textAlign: TextAlign.right,
                   style: const TextStyle(
-                    fontSize: 22,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'Amiri', // Assuming you'll add an Arabic font
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   _quranService.getVerseTranslation(widget.surahNumber, verseNumber),
-                  style: const TextStyle(
-                    color: IslamiTheme.textSecondary,
-                    fontSize: 14,
-                  ),
+                  style: const TextStyle(color: IslamiTheme.textSecondary, fontSize: 14),
                 ),
               ],
             ),

@@ -19,7 +19,7 @@ class Post {
 }
 
 class UmmahService {
-  final _dio = Dio(BaseOptions(baseUrl: 'http://localhost:8080'));
+  final _dio = Dio(BaseOptions(baseUrl: 'http://192.168.1.14:8080'));
 
   Future<List<Post>> getPosts() async {
     try {

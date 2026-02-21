@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:islami_mobile/core/theme.dart';
 import 'package:islami_mobile/features/home/home_page.dart';
@@ -17,9 +18,19 @@ class IslamiApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Islami',
+      title: 'إسلامي',
       theme: IslamiTheme.light,
       debugShowCheckedModeBanner: false,
+      locale: const Locale('ar', 'SA'), // Default to Arabic
+      supportedLocales: const [
+        Locale('ar', 'SA'),
+        Locale('en', 'US'),
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       home: const MainPage(),
     );
   }
@@ -47,7 +58,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Islami'),
+        title: const Text('إسلامي'),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -63,23 +74,23 @@ class _MainPageState extends State<MainPage> {
         items: const [
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.house),
-            label: 'Home',
+            label: 'الرئيسية',
           ),
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.clock),
-            label: 'Prayers',
+            label: 'الصلاة',
           ),
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.bookQuran),
-            label: 'Quran',
+            label: 'القرآن',
           ),
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.compass),
-            label: 'Qibla',
+            label: 'القبلة',
           ),
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.handHoldingHeart),
-            label: 'Azkar',
+            label: 'الأذكار',
           ),
         ],
       ),

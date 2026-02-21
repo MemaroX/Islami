@@ -8,9 +8,11 @@ To provide the global Ummah with a sophisticated, visually stunning, and technic
 ## 🛠 Features
 
 ### 📱 Mobile (Android & iOS)
+- **Full Arabic UI:** Native RTL layout with full translation for a culturally immersive experience.
+- **Data Sync Engine:** High-performance, automatic synchronization of prayer activity from mobile to PC.
+- **Dynamic Geocoding:** Real-time city and country detection for GPS-accurate home dashboard.
 - **Precision Prayer Times:** GPS-accurate schedules using the `adhan` engine.
-- **Quran Kareem:** Full Surah index with high-fidelity Arabic text, translations, and audio streaming.
-- **Prayer Tracker:** Persistent SQL-based tracking system for daily prayer consistency.
+- **Quran Kareem:** High-fidelity audio recitation streaming and full Surah index with translations.
 - **Dynamic Qibla Compass:** Real-time orientation using device sensors.
 - **Tasbih & Azkar:** Digital counters and categorized supplications for daily devotion.
 - **Ummah Community:** Social layer for real-time engagement and community support.
