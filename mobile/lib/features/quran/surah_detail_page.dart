@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:quran/quran.dart' as quran;
 import 'package:islami_mobile/core/theme.dart';
 import 'package:islami_mobile/features/quran/quran_service.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -33,18 +32,21 @@ class _SurahDetailPageState extends State<SurahDetailPage> {
       }
 
       // Using the highly reliable Global Quran Audio CDN
-      final url = "https://cdn.islamic.network/quran/audio/128/ar.alafasy/${widget.surahNumber}${verseNumber.toString().padLeft(3, '0')}.mp3";
-      
+      final url =
+          "https://cdn.islamic.network/quran/audio/128/ar.alafasy/${widget.surahNumber}${verseNumber.toString().padLeft(3, '0')}.mp3";
+
       await _audioPlayer.play(UrlSource(url));
       setState(() => _playingVerse = verseNumber);
-      
+
       _audioPlayer.onPlayerComplete.listen((event) {
         if (mounted) setState(() => _playingVerse = null);
       });
     } catch (e) {
       print('Audio Player Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error playing audio. Check internet connection.')),
+        SnackBar(
+          content: Text('Error playing audio. Check internet connection.'),
+        ),
       );
     }
   }
@@ -73,11 +75,18 @@ class _SurahDetailPageState extends State<SurahDetailPage> {
                   children: [
                     CircleAvatar(
                       radius: 12,
-                      backgroundColor: IslamiTheme.primaryColor.withOpacity(0.1),
-                      child: Text('$verseNumber', style: const TextStyle(fontSize: 10)),
+                      backgroundColor: IslamiTheme.primaryColor.withOpacity(
+                        0.1,
+                      ),
+                      child: Text(
+                        '$verseNumber',
+                        style: const TextStyle(fontSize: 10),
+                      ),
                     ),
                     IconButton(
-                      icon: Icon(isPlaying ? Icons.stop_circle : Icons.play_circle),
+                      icon: Icon(
+                        isPlaying ? Icons.stop_circle : Icons.play_circle,
+                      ),
                       color: IslamiTheme.primaryColor,
                       onPressed: () => _playVerse(verseNumber),
                     ),
@@ -93,8 +102,14 @@ class _SurahDetailPageState extends State<SurahDetailPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  _quranService.getVerseTranslation(widget.surahNumber, verseNumber),
-                  style: const TextStyle(color: IslamiTheme.textSecondary, fontSize: 14),
+                  _quranService.getVerseTranslation(
+                    widget.surahNumber,
+                    verseNumber,
+                  ),
+                  style: const TextStyle(
+                    color: IslamiTheme.textSecondary,
+                    fontSize: 14,
+                  ),
                 ),
               ],
             ),

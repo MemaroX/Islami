@@ -32,6 +32,8 @@ class _QiblaPageState extends State<QiblaPage> {
 }
 
 class QiblahCompassWidget extends StatelessWidget {
+  const QiblahCompassWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -57,11 +59,11 @@ class QiblahCompassWidget extends StatelessWidget {
                 children: [
                   Transform.rotate(
                     angle: (qiblahDirection.direction * (math.pi / 180) * -1),
-                    child: Image.asset('assets/images/compass.png', height: 300, errorBuilder: (_, __, ___) => _fallbackCompass()),
+                    child: Image.asset('assets/images/compass.png', height: 300, errorBuilder: (_, _, _) => _fallbackCompass()),
                   ),
                   Transform.rotate(
                     angle: (qiblahDirection.qiblah * (math.pi / 180) * -1),
-                    child: Image.asset('assets/images/needle.png', height: 300, errorBuilder: (_, __, ___) => _fallbackNeedle()),
+                    child: Image.asset('assets/images/needle.png', height: 300, errorBuilder: (_, _, _) => _fallbackNeedle()),
                   ),
                 ],
               ),
@@ -92,7 +94,7 @@ class QiblahCompassWidget extends StatelessWidget {
   }
 
   Widget _fallbackNeedle() {
-    return Container(
+    return SizedBox(
       width: 300,
       height: 300,
       child: Center(

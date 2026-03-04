@@ -7,11 +7,11 @@ class AzkarPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _azkarService = AzkarService();
-    final _categories = ['Morning', 'Evening', 'After Prayer'];
+    final azkarService = AzkarService();
+    final categories = ['Morning', 'Evening', 'After Prayer'];
 
     return DefaultTabController(
-      length: _categories.length,
+      length: categories.length,
       child: Column(
         children: [
           TabBar(
@@ -19,16 +19,16 @@ class AzkarPage extends StatelessWidget {
             labelColor: IslamiTheme.primaryColor,
             unselectedLabelColor: IslamiTheme.textSecondary,
             indicatorColor: IslamiTheme.primaryColor,
-            tabs: _categories.map((c) => Tab(text: c)).toList(),
+            tabs: categories.map((c) => Tab(text: c)).toList(),
           ),
           Expanded(
             child: TabBarView(
-              children: _categories.map((c) {
-                final azkar = _azkarService.getAzkarByCategory(c);
+              children: categories.map((c) {
+                final azkar = azkarService.getAzkarByCategory(c);
                 return ListView.separated(
                   itemCount: azkar.length,
                   padding: const EdgeInsets.all(16),
-                  separatorBuilder: (_, __) => const SizedBox(height: 16),
+                  separatorBuilder: (_, _) => const SizedBox(height: 16),
                   itemBuilder: (_, index) {
                     final item = azkar[index];
                     return Card(
